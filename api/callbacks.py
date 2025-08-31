@@ -557,7 +557,7 @@ async def handle_success_callback(data: Dict[str, Any], db: Session):
         
         if connection:
             connection.status = 'active'
-            connection.last_success_at = datetime.utcnow()
+            connection.last_success_at = datetime.utcnow()  # pyright: ignore[reportDeprecated]
             db.commit()
             
     except Exception as e:

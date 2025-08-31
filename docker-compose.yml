@@ -45,9 +45,11 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # Database Management (Adminer)
+  # Database Management (Custom Adminer with SQLite support)
   adminer:
-    image: adminer:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.adminer
     container_name: money-manager-adminer
     restart: unless-stopped
     ports:
@@ -55,6 +57,7 @@ services:
     environment:
       - ADMINER_DEFAULT_SERVER=sqlite:///data/money_manager.db
       - ADMINER_DESIGN=pepa-linha-dark
+      - ADMINER_PLUGINS=login-password-less
     volumes:
       - ./data:/data:ro  # Read-only access to database
     depends_on:

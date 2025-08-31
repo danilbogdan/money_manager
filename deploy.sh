@@ -215,16 +215,21 @@ case "${1:-deploy}" in
         print_success "Backup service started"
         ;;
     "adminer")
-        print_status "Starting Adminer database management..."
+        print_status "Building and starting Adminer database management..."
+        docker compose --profile adminer build adminer
         docker compose --profile adminer up -d adminer
         print_success "Adminer started - access via http://localhost:8080"
         echo ""
         print_status "Adminer login details:"
-        echo "  System: SQLite 3"
-        echo "  Server: /data/money_manager.db"
+        echo "  🌐 Local access: http://localhost:8080"
+        echo "  🌐 Web access: https://danilbogdan.com/adminer/ (if nginx configured)"
+        echo ""
+        print_status "Login credentials:"
+        echo "  Server: sqlite:///data/money_manager.db"
         echo "  Username: (leave empty)"
-        echo "  Password: (leave empty)"
-        echo "  Database: (leave empty)"
+        echo "  Password: admin"
+        echo ""
+        print_status "After login, the database will be accessible automatically."
         ;;
     "stop-adminer")
         print_status "Stopping Adminer..."

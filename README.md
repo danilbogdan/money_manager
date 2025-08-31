@@ -365,6 +365,8 @@ docker-compose logs -f
 
 📖 **[Complete Deployment Guide](DEPLOYMENT.md)** - Detailed production deployment instructions
 
+🗄️ **[Database Management with Adminer](ADMINER_SETUP.md)** - Complete Adminer setup for SQLite
+
 ## 🔒 Security & Git
 
 ### Git Ignore

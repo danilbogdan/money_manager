@@ -1,0 +1,17 @@
+# Custom Adminer with SQLite support (no password required)
+FROM adminer:latest
+
+# Copy the login-password-less plugin
+COPY adminer-config/login-password-less.php /var/www/html/plugins-enabled/
+
+# Set proper permissions
+USER root
+RUN chown -R www-data:www-data /var/www/html/plugins-enabled/ \
+    && chmod 644 /var/www/html/plugins-enabled/login-password-less.php
+
+# Switch back to www-data user
+USER www-data
+
+# Set environment variables
+ENV ADMINER_PLUGINS="login-password-less"
+ENV ADMINER_DEFAULT_SERVER="sqlite:///data/money_manager.db"
