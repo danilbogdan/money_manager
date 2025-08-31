@@ -1,0 +1,411 @@
+# =================================
+# SENSITIVE FILES (NEVER COMMIT)
+# =================================
+
+# Environment files with secrets
+.env
+.env.*
+*.env
+env.production
+env.local
+env.development
+
+# SSL certificates and private keys
+ssl/
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# Google API credentials
+credentials/
+*credentials*.json
+token.json
+service-account*.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+data/
+backups/
+
+# =================================
+# PYTHON
+# =================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# =================================
+# DOCKER & DEPLOYMENT
+# =================================
+
+# Deployment logs and data
+logs/
+monitoring/
+certbot/
+
+# Docker-related (keep Dockerfiles but ignore runtime data)
+.docker/
+docker-compose.override.yml
+
+# =================================
+# WEB & FRONTEND
+# =================================
+
+# Node.js (if adding frontend later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# Bower dependency directory (https://bower.io/)
+bower_components
+
+# =================================
+# IDEs and EDITORS
+# =================================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*.tmp
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Nano
+*.save
+*.swp
+
+# =================================
+# OPERATING SYSTEMS
+# =================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+
+# =================================
+# LOGS AND TEMPORARY FILES
+# =================================
+
+# Log files
+*.log
+*.log.*
+logs/
+log/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+*.rej
+
+# Runtime files
+*.pid
+*.sock
+
+# =================================
+# TESTING AND DEVELOPMENT
+# =================================
+
+# Test results
+test-results/
+test_*.db
+*_test.db
+
+# Development database
+money_manager_dev.db
+development.db
+
+# ngrok
+ngrok
+ngrok.exe
+*.ngrok.io
+
+# =================================
+# SECURITY KEYS AND TOKENS
+# =================================
+
+# SSH keys
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# API keys and secrets
+*secret*
+*private*
+*api_key*
+*token*
+*.secret
+
+# Salt Edge specific
+saltedge_*.json
+
+# =================================
+# MEDIA AND UPLOADS
+# =================================
+
+# Images
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.ico
+
+# Videos
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+
+# Audio
+*.mp3
+*.wav
+*.flac
+
+# Documents (unless specifically needed)
+*.pdf
+*.doc
+*.docx
+
+# =================================
+# ARCHIVES
+# =================================
+
+# Compressed files
+*.zip
+*.tar.gz
+*.tar.bz2
+*.rar
+*.7z
+
+# =================================
+# MONITORING AND ANALYTICS
+# =================================
+
+# Monitoring tools
+*.monitoring
+healthcheck.log
+
+# Analytics
+*.analytics
+
+# =================================
+# PROJECT SPECIFIC
+# =================================
+
+# Money Manager specific ignores
+money_manager*.db
+financial_data/
+user_uploads/
+export/
+reports/
+
+# Google Docs exports
+*.gdoc
+*.gsheet
+
+# Backup files with timestamps
+*_backup_*
+*_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9].*

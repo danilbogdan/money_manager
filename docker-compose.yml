@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # Money Manager Application
+  money-manager:
+    build: .
+    container_name: money-manager-app
+    restart: unless-stopped
+    environment:
+      # Salt Edge Configuration
+      - SALTEDGE_BASE_URL=${SALTEDGE_BASE_URL:-https://www.saltedge.com/api/v6}
+      - SALTEDGE_APP_ID=${SALTEDGE_APP_ID}
+      - SALTEDGE_SECRET_KEY=${SALTEDGE_SECRET_KEY}
+      - SALTEDGE_CLIENT_ID=${SALTEDGE_CLIENT_ID}
+      
+      # Database Configuration (SQLite file location)
+      - DATABASE_URL=sqlite:///./data/money_manager.db
+      
+      # Google API Configuration
+      - GOOGLE_CREDENTIALS_FILE=${GOOGLE_CREDENTIALS_FILE:-/app/credentials/credentials.json}
+      - GOOGLE_TOKEN_FILE=${GOOGLE_TOKEN_FILE:-/app/credentials/token.json}
+      
+      # Application Configuration
+      - DEBUG=${DEBUG:-False}
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+    volumes:
+      # Persistent database storage
+      - ./data:/app/data
+      # Google API credentials (if using Google Docs)
+      - ./credentials:/app/credentials:ro
+      # Logs
+      - ./logs:/app/logs
+    networks:
+      - money-manager-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Nginx Reverse Proxy for HTTPS
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: money-manager-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      # SSL certificates (you'll need to provide these)
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - money-manager
+    networks:
+      - money-manager-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Optional: Watchtower for automatic updates
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: money-manager-watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=3600  # Check every hour
+      - WATCHTOWER_INCLUDE_STOPPED=true
+    command: money-manager-app money-manager-nginx
+
+networks:
+  money-manager-network:
+    driver: bridge
+
+volumes:
+  money-manager-data:
