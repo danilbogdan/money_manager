@@ -214,6 +214,24 @@ case "${1:-deploy}" in
         docker compose --profile backup up -d backup
         print_success "Backup service started"
         ;;
+    "adminer")
+        print_status "Starting Adminer database management..."
+        docker compose --profile adminer up -d adminer
+        print_success "Adminer started - access via http://localhost:8080"
+        echo ""
+        print_status "Adminer login details:"
+        echo "  System: SQLite 3"
+        echo "  Server: /data/money_manager.db"
+        echo "  Username: (leave empty)"
+        echo "  Password: (leave empty)"
+        echo "  Database: (leave empty)"
+        ;;
+    "stop-adminer")
+        print_status "Stopping Adminer..."
+        docker compose stop adminer
+        docker compose rm -f adminer
+        print_success "Adminer stopped"
+        ;;
     "update")
         print_status "Updating Money Manager..."
         docker compose down
@@ -225,15 +243,19 @@ case "${1:-deploy}" in
         echo "Usage: $0 [command]"
         echo ""
         echo "Commands:"
-        echo "  deploy  - Deploy the application (default)"
-        echo "  ssl     - Setup SSL certificates"
-        echo "  status  - Show deployment status"
-        echo "  logs    - Show application logs"
-        echo "  stop    - Stop the application"
-        echo "  restart - Restart the application"
-        echo "  backup  - Start backup service"
-        echo "  update  - Update and restart the application"
-        echo "  help    - Show this help message"
+        echo "  deploy        - Deploy the application (default)"
+        echo "  ssl           - Setup SSL certificates"
+        echo "  status        - Show deployment status"
+        echo "  logs          - Show application logs"
+        echo "  stop          - Stop the application"
+        echo "  restart       - Restart the application"
+        echo "  backup        - Start backup service"
+        echo "  adminer       - Start Adminer database management (http://localhost:8080)"
+        echo "  stop-adminer  - Stop Adminer service"
+        echo "  setup-auth    - Setup basic auth for callbacks"
+        echo "                  Usage: $0 setup-auth [username] [password]"
+        echo "  update        - Update and restart the application"
+        echo "  help          - Show this help message"
         ;;
     *)
         print_error "Unknown command: $1"
