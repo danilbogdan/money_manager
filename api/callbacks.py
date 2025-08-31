@@ -64,8 +64,8 @@ async def ais_success_callback(
         expires_at = request.headers.get('Expires-at', '')
         
         # Verify signature (optional but recommended)
-        if signature and not verify_salt_edge_signature(body, signature, expires_at):
-            raise HTTPException(status_code=401, detail="Invalid signature")
+        # if signature and not verify_salt_edge_signature(body, signature, expires_at):
+        #     raise HTTPException(status_code=401, detail="Invalid signature")
         
         # Parse callback data
         try:
@@ -110,8 +110,8 @@ async def ais_failure_callback(
         signature = request.headers.get('Signature', '')
         expires_at = request.headers.get('Expires-at', '')
         
-        if signature and not verify_salt_edge_signature(body, signature, expires_at):
-            raise HTTPException(status_code=401, detail="Invalid signature")
+        # if signature and not verify_salt_edge_signature(body, signature, expires_at):
+            # raise HTTPException(status_code=401, detail="Invalid signature")
         
         callback_data = json.loads(body.decode('utf-8'))
         print(f"Received AIS Failure callback: {callback_data}")
@@ -148,8 +148,8 @@ async def ais_notify_callback(
         signature = request.headers.get('Signature', '')
         expires_at = request.headers.get('Expires-at', '')
         
-        if signature and not verify_salt_edge_signature(body, signature, expires_at):
-            raise HTTPException(status_code=401, detail="Invalid signature")
+        # if signature and not verify_salt_edge_signature(body, signature, expires_at):
+        #     raise HTTPException(status_code=401, detail="Invalid signature")
         
         callback_data = json.loads(body.decode('utf-8'))
         print(f"Received AIS Notify callback: {callback_data}")
@@ -186,8 +186,8 @@ async def ais_destroy_callback(
         signature = request.headers.get('Signature', '')
         expires_at = request.headers.get('Expires-at', '')
         
-        if signature and not verify_salt_edge_signature(body, signature, expires_at):
-            raise HTTPException(status_code=401, detail="Invalid signature")
+        # if signature and not verify_salt_edge_signature(body, signature, expires_at):
+        #     raise HTTPException(status_code=401, detail="Invalid signature")
         
         callback_data = json.loads(body.decode('utf-8'))
         print(f"Received AIS Destroy callback: {callback_data}")
@@ -224,8 +224,8 @@ async def ais_provider_changes_callback(
         signature = request.headers.get('Signature', '')
         expires_at = request.headers.get('Expires-at', '')
         
-        if signature and not verify_salt_edge_signature(body, signature, expires_at):
-            raise HTTPException(status_code=401, detail="Invalid signature")
+        # if signature and not verify_salt_edge_signature(body, signature, expires_at):
+        #     raise HTTPException(status_code=401, detail="Invalid signature")
         
         callback_data = json.loads(body.decode('utf-8'))
         print(f"Received AIS Provider Changes callback: {callback_data}")
@@ -263,8 +263,8 @@ async def pis_success_callback(
         signature = request.headers.get('Signature', '')
         expires_at = request.headers.get('Expires-at', '')
         
-        if signature and not verify_salt_edge_signature(body, signature, expires_at):
-            raise HTTPException(status_code=401, detail="Invalid signature")
+        # if signature and not verify_salt_edge_signature(body, signature, expires_at):
+        #     raise HTTPException(status_code=401, detail="Invalid signature")
         
         callback_data = json.loads(body.decode('utf-8'))
         print(f"Received PIS Success callback: {callback_data}")
@@ -302,8 +302,8 @@ async def pis_failure_callback(
         signature = request.headers.get('Signature', '')
         expires_at = request.headers.get('Expires-at', '')
         
-        if signature and not verify_salt_edge_signature(body, signature, expires_at):
-            raise HTTPException(status_code=401, detail="Invalid signature")
+        # if signature and not verify_salt_edge_signature(body, signature, expires_at):
+        #     raise HTTPException(status_code=401, detail="Invalid signature")
         
         callback_data = json.loads(body.decode('utf-8'))
         print(f"Received PIS Failure callback: {callback_data}")
@@ -339,8 +339,8 @@ async def pis_notify_callback(
         signature = request.headers.get('Signature', '')
         expires_at = request.headers.get('Expires-at', '')
         
-        if signature and not verify_salt_edge_signature(body, signature, expires_at):
-            raise HTTPException(status_code=401, detail="Invalid signature")
+        # if signature and not verify_salt_edge_signature(body, signature, expires_at):
+        #     raise HTTPException(status_code=401, detail="Invalid signature")
         
         callback_data = json.loads(body.decode('utf-8'))
         print(f"Received PIS Notify callback: {callback_data}")
@@ -372,8 +372,8 @@ async def salt_edge_legacy_callback(
         signature = request.headers.get('Signature', '')
         expires_at = request.headers.get('Expires-at', '')
         
-        if signature and not verify_salt_edge_signature(body, signature, expires_at):
-            raise HTTPException(status_code=401, detail="Invalid signature")
+        # if signature and not verify_salt_edge_signature(body, signature, expires_at):
+        #     raise HTTPException(status_code=401, detail="Invalid signature")
         
         callback_data = json.loads(body.decode('utf-8'))
         print(f"Received legacy Salt Edge callback: {callback_data}")
