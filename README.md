@@ -40,17 +40,41 @@ A comprehensive personal finance management application that integrates with [Sa
 
 ### 2. Installation
 
+#### Quick Setup with UV (Recommended)
 ```bash
 # Clone the repository
 git clone <repository-url>
 cd money_manager
 
+# Setup development environment (installs UV if needed)
+chmod +x setup-dev.sh
+./setup-dev.sh
+
+# Edit environment variables
+nano .env
+```
+
+#### Alternative: Manual Setup
+```bash
+# Install UV package manager (much faster than pip)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Create virtual environment
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
 # Install dependencies
-pip install -r requirements.txt
+uv pip install -e ".[dev]"
 
 # Set up environment variables
-cp .env.example .env
+cp env.production.template .env
 # Edit .env with your actual credentials
+```
+
+#### Legacy: pip installation
+```bash
+# Traditional pip installation (slower)
+pip install -r requirements.txt
 ```
 
 ### 3. Configuration
@@ -79,12 +103,20 @@ API_PORT=8000
 
 ### 4. Run the Application
 
+#### With UV (Recommended)
 ```bash
-# Start the API server
-python main.py
+# Start development server with hot reload
+uv run uvicorn main:app --reload --port 8000
 
-# Or use uvicorn directly
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+# Or run directly
+uv run python main.py
+```
+
+#### Legacy Method
+```bash
+# Traditional approach
+python main.py
+# Or: uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The API will be available at `http://localhost:8000`. Visit `http://localhost:8000/docs` for the interactive API documentation.
@@ -276,7 +308,7 @@ git clone <your-repo> money-manager
 cd money-manager
 chmod +x deploy.sh
 
-# Deploy with automatic SSL
+# Deploy with automatic SSL (uses UV for faster builds)
 ./deploy.sh deploy
 ./deploy.sh ssl
 
@@ -345,12 +377,69 @@ git add .
 git commit -m "Initial commit - sensitive files protected"
 ```
 
-## Development
+## Development with UV ⚡
 
-### Running Tests
+### Why UV?
+- **🚀 10-100x faster** than pip for installs
+- **🔒 Deterministic builds** with lockfiles
+- **⚡ Better caching** and dependency resolution
+- **🏗️ Modern Python toolchain** (like npm/yarn for Node.js)
+
+### Development Commands
 
 ```bash
+# Setup development environment
+./setup-dev.sh
+
+# Add new dependencies
+uv add requests beautifulsoup4
+uv add pytest --dev  # Development dependency
+
+# Remove dependencies  
+uv remove package-name
+
+# Install from lockfile (production)
+uv pip install --locked
+
+# Update dependencies
+uv lock --upgrade
+
+# Run commands in environment
+uv run pytest tests/
+uv run black .
+uv run mypy .
+uv run ruff check .
+```
+
+### Development Workflow
+
+```bash
+# 1. Start development server with hot reload
+uv run uvicorn main:app --reload
+
+# 2. Run tests (with coverage)
+uv run pytest tests/ --cov=. --cov-report=html
+
+# 3. Format and lint code
+./setup-dev.sh format
+
+# 4. Type checking
+./setup-dev.sh type-check
+
+# 5. Run all quality checks
+uv run pre-commit run --all-files
+```
+
+### Legacy Development (pip)
+
+For teams not ready for UV:
+
+```bash
+# Traditional testing
 pytest tests/
+
+# Legacy installation  
+pip install -r requirements.txt
 ```
 
 ### Code Structure

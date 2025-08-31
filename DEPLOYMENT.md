@@ -2,6 +2,12 @@
 
 This guide will help you deploy the Money Manager application to your server using Docker and Docker Compose with HTTPS support for Salt Edge webhooks.
 
+git s## ⚡ Performance Highlights
+
+- **3-5x faster Docker builds** with UV package manager
+- **Optimized dependency resolution** and caching
+- **Production-ready** with nginx, SSL, and monitoring
+
 ## 📋 Prerequisites
 
 - **Server**: Linux server with Docker and Docker Compose installed

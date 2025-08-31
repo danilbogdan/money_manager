@@ -23,6 +23,10 @@ coverage.xml
 .venv/
 .pytest_cache/
 
+# UV package manager (keep uv.lock, exclude cache)
+.uv-cache/
+.uv/
+
 # Environment files
 .env
 .env.*
