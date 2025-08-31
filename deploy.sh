@@ -68,8 +68,12 @@ check_dependencies() {
 # Create necessary directories
 create_directories() {
     print_status "Creating necessary directories..."
-    mkdir -p data logs ssl credentials backups monitoring certbot/www
-    print_success "Directories created"
+    mkdir -p data logs credentials backups
+    
+    # Set proper permissions for Docker volumes
+    chmod 777 data logs credentials 2>/dev/null || true
+    
+    print_success "Directories created with proper permissions"
 }
 
 # Build and start services

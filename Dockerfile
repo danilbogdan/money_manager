@@ -41,12 +41,11 @@ COPY . .
 # Create directory for database and logs with proper permissions
 RUN mkdir -p /app/data /app/logs
 
-# Create non-root user for security
-RUN adduser --disabled-password --gecos '' appuser \
-    && chown -R appuser:appuser /app \
-    && chmod 755 /app/data /app/logs
+# Create directories with full permissions (run as root for volume access)
+RUN chmod 755 /app/data /app/logs
 
-USER appuser
+# Note: Running as root to avoid volume permission issues
+# For production, ensure your server security is properly configured
 
 # Expose port
 EXPOSE 8000
