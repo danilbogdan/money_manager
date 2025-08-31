@@ -77,13 +77,11 @@ deploy_application() {
     print_status "Building and starting Money Manager..."
     
     # Stop existing containers
-    docker-compose -f docker-compose.prod.yml down 2>/dev/null || true
+    docker-compose down 2>/dev/null || true
     
-    # Build with retry logic for UV issues
-    print_status "Building Docker image..."
-    docker-compose -f docker-compose.prod.yml build
-    # Start services
-    docker-compose -f docker-compose.prod.yml up -d money-manager nginx
+    # Build and start
+    docker-compose build
+    docker-compose up -d money-manager
     
     print_success "Application deployed successfully"
 }
@@ -115,7 +113,7 @@ check_health() {
     # Wait for application to start
     sleep 30
     
-    if docker-compose -f docker-compose.prod.yml exec money-manager curl -f http://localhost:8000/health > /dev/null 2>&1; then
+    if docker-compose exec money-manager curl -f http://localhost:8000/health > /dev/null 2>&1; then
         print_success "Application is healthy"
         return 0
     else
@@ -127,22 +125,22 @@ check_health() {
 # Show deployment status
 show_status() {
     print_status "Deployment Status:"
-    docker-compose -f docker-compose.prod.yml ps
+    docker-compose ps
     
     echo ""
-    print_status "Application URLs:"
-    DOMAIN=$(grep DOMAIN .env | cut -d'=' -f2 | tr -d '"')
-    echo "  🌐 Application: https://${DOMAIN}"
-    echo "  📚 API Documentation: https://${DOMAIN}/docs"
-    echo "  ❤️  Health Check: https://${DOMAIN}/health"
+    print_status "Application URLs (configure in your nginx):"
+    print_status "Application runs on: http://localhost:8000"
+    echo "  🌐 Application: http://localhost:8000"
+    echo "  📚 API Documentation: http://localhost:8000/docs"
+    echo "  ❤️  Health Check: http://localhost:8000/health"
     
     echo ""
-    print_status "Salt Edge Callback URLs:"
-    echo "  📞 AIS Success: https://${DOMAIN}/api/v1/callbacks/ais/success"
-    echo "  📞 AIS Failure: https://${DOMAIN}/api/v1/callbacks/ais/failure"
-    echo "  📞 AIS Notify: https://${DOMAIN}/api/v1/callbacks/ais/notify"
-    echo "  📞 AIS Destroy: https://${DOMAIN}/api/v1/callbacks/ais/destroy"
-    echo "  📞 Provider Changes: https://${DOMAIN}/api/v1/callbacks/ais/provider-changes"
+    print_status "Configure these Salt Edge Callback URLs in your nginx:"
+    echo "  📞 AIS Success: https://your-domain.com/api/v1/callbacks/ais/success"
+    echo "  📞 AIS Failure: https://your-domain.com/api/v1/callbacks/ais/failure"
+    echo "  📞 AIS Notify: https://your-domain.com/api/v1/callbacks/ais/notify"
+    echo "  📞 AIS Destroy: https://your-domain.com/api/v1/callbacks/ais/destroy"
+    echo "  📞 Provider Changes: https://your-domain.com/api/v1/callbacks/ais/provider-changes"
 }
 
 # Main deployment function
@@ -188,36 +186,35 @@ case "${1:-deploy}" in
     "ssl")
         setup_ssl
         if [ $? -eq 0 ]; then
-            print_status "Restarting nginx to use new certificates..."
-            docker-compose -f docker-compose.prod.yml restart nginx
+            print_status "SSL certificates configured - restart your nginx to use them"
         fi
         ;;
     "status")
         show_status
         ;;
     "logs")
-        docker-compose -f docker-compose.prod.yml logs -f
+        docker-compose logs -f
         ;;
     "stop")
         print_status "Stopping Money Manager..."
-        docker-compose -f docker-compose.prod.yml down
+        docker-compose down
         print_success "Stopped"
         ;;
     "restart")
         print_status "Restarting Money Manager..."
-        docker-compose -f docker-compose.prod.yml restart
+        docker-compose restart
         print_success "Restarted"
         ;;
     "backup")
         print_status "Starting backup service..."
-        docker-compose -f docker-compose.prod.yml --profile backup up -d backup
+        docker-compose --profile backup up -d backup
         print_success "Backup service started"
         ;;
     "update")
         print_status "Updating Money Manager..."
-        docker-compose -f docker-compose.prod.yml down
-        docker-compose -f docker-compose.prod.yml build --no-cache
-        docker-compose -f docker-compose.prod.yml up -d
+        docker-compose down
+        docker-compose build --no-cache
+        docker-compose up -d
         print_success "Updated"
         ;;
     "help")

@@ -330,12 +330,18 @@ SALTEDGE_APP_ID=your_app_id
 SALTEDGE_SECRET_KEY=your_secret_key
 ```
 
-### Docker Build Troubleshooting
-
-If you encounter UV installation issues during Docker build:
+### Docker Build & Deployment
 
 ```bash
-docker-compose -f docker-compose.prod.yml build --no-cache
+# Build and run (works with your existing nginx)
+./deploy.sh deploy
+
+# Manual deployment
+docker-compose build
+docker-compose up -d
+
+# Check status
+./deploy.sh status
 ```
 
 ### Production URLs
@@ -351,10 +357,10 @@ After deployment, your Salt Edge callbacks will be:
 
 ```bash
 # Start development environment
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose up -d
 
 # View logs
-docker-compose -f docker-compose.dev.yml logs -f
+docker-compose logs -f
 ```
 
 📖 **[Complete Deployment Guide](DEPLOYMENT.md)** - Detailed production deployment instructions

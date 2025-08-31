@@ -6,6 +6,8 @@ services:
     build: .
     container_name: money-manager-app
     restart: unless-stopped
+    ports:
+      - "8000:8000"  # Expose directly for your nginx to proxy
     environment:
       # Salt Edge Configuration
       - SALTEDGE_BASE_URL=${SALTEDGE_BASE_URL:-https://www.saltedge.com/api/v6}
@@ -13,10 +15,10 @@ services:
       - SALTEDGE_SECRET_KEY=${SALTEDGE_SECRET_KEY}
       - SALTEDGE_CLIENT_ID=${SALTEDGE_CLIENT_ID}
       
-      # Database Configuration (SQLite file location)
+      # Database Configuration
       - DATABASE_URL=sqlite:///./data/money_manager.db
       
-      # Google API Configuration
+      # Google API Configuration (optional)
       - GOOGLE_CREDENTIALS_FILE=${GOOGLE_CREDENTIALS_FILE:-/app/credentials/credentials.json}
       - GOOGLE_TOKEN_FILE=${GOOGLE_TOKEN_FILE:-/app/credentials/token.json}
       
@@ -31,54 +33,33 @@ services:
       - ./credentials:/app/credentials:ro
       # Logs
       - ./logs:/app/logs
-    networks:
-      - money-manager-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-  # Nginx Reverse Proxy for HTTPS
-  nginx:
-    image: nginx:1.25-alpine
-    container_name: money-manager-nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      # SSL certificates (you'll need to provide these)
-      - ./ssl:/etc/nginx/ssl:ro
-    depends_on:
-      - money-manager
-    networks:
-      - money-manager-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Optional: Watchtower for automatic updates
-  watchtower:
-    image: containrrr/watchtower:latest
-    container_name: money-manager-watchtower
+  # Optional: Database backup service
+  backup:
+    image: alpine:latest
+    container_name: money-manager-backup
     restart: unless-stopped
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/data:ro
+      - ./backups:/backups
     environment:
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_POLL_INTERVAL=3600  # Check every hour
-      - WATCHTOWER_INCLUDE_STOPPED=true
-    command: money-manager-app money-manager-nginx
-
-networks:
-  money-manager-network:
-    driver: bridge
-
-volumes:
-  money-manager-data:
+      - BACKUP_SCHEDULE=${BACKUP_SCHEDULE:-0 2 * * *}  # Daily at 2 AM
+    command: >
+      sh -c "
+        apk add --no-cache dcron &&
+        echo '${BACKUP_SCHEDULE:-0 2 * * *} cp /data/money_manager.db /backups/money_manager_$$(date +\"%Y%m%d_%H%M%S\").db && find /backups -name \"money_manager_*.db\" -mtime +30 -delete' | crontab - &&
+        crond -f
+      "
+    profiles:
+      - backup
