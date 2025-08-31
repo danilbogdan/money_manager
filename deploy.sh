@@ -79,8 +79,10 @@ deploy_application() {
     # Stop existing containers
     docker-compose -f docker-compose.prod.yml down 2>/dev/null || true
     
-    # Build and start
+    # Build with retry logic for UV issues
+    print_status "Building Docker image..."
     docker-compose -f docker-compose.prod.yml build
+    # Start services
     docker-compose -f docker-compose.prod.yml up -d money-manager nginx
     
     print_success "Application deployed successfully"

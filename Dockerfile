@@ -1,33 +1,39 @@
-# Use Python 3.11 slim image for smaller size
-FROM python:3.11-slim
+# Alternative Dockerfile using official UV image
+# Use this if the main Dockerfile has issues
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    UV_CACHE_DIR=/tmp/uv-cache
+# Stage 1: Use UV image for dependency installation
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS builder
 
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies and uv
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        gcc \
-        g++ \
-        curl \
-    && curl -LsSf https://astral.sh/uv/install.sh | sh \
-    && rm -rf /var/lib/apt/lists/*
-
-# Add uv to PATH
-ENV PATH="/root/.cargo/bin:$PATH"
-
-# Copy dependency files first for better caching
+# Copy dependency files
 COPY requirements.txt .
 COPY pyproject.toml* .
 COPY uv.lock* .
 
-# Install Python dependencies with uv (much faster than pip)
+# Install dependencies
 RUN uv pip install --system --no-cache -r requirements.txt
+
+# Stage 2: Create final image
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Set work directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Python packages from builder stage
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy application code
 COPY . .
