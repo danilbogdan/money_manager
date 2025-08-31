@@ -16,7 +16,7 @@ services:
       - SALTEDGE_CLIENT_ID=${SALTEDGE_CLIENT_ID}
       
       # Database Configuration
-      - DATABASE_URL=sqlite:///./data/money_manager.db
+      - DATABASE_URL=sqlite:////app/data/money_manager.db
       
       # Google API Configuration (optional)
       - GOOGLE_CREDENTIALS_FILE=${GOOGLE_CREDENTIALS_FILE:-/app/credentials/credentials.json}

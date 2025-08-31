@@ -38,12 +38,14 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 # Copy application code
 COPY . .
 
-# Create directory for database and logs
+# Create directory for database and logs with proper permissions
 RUN mkdir -p /app/data /app/logs
 
 # Create non-root user for security
 RUN adduser --disabled-password --gecos '' appuser \
-    && chown -R appuser:appuser /app
+    && chown -R appuser:appuser /app \
+    && chmod 755 /app/data /app/logs
+
 USER appuser
 
 # Expose port
