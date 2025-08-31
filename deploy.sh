@@ -57,7 +57,7 @@ check_dependencies() {
         exit 1
     fi
     
-    if ! command -v docker-compose &> /dev/null; then
+    if ! command -v docker compose &> /dev/null; then
         print_error "Docker Compose is not installed"
         exit 1
     fi
@@ -77,11 +77,11 @@ deploy_application() {
     print_status "Building and starting Money Manager..."
     
     # Stop existing containers
-    docker-compose down 2>/dev/null || true
+    docker compose down 2>/dev/null || true
     
     # Build and start
-    docker-compose build
-    docker-compose up -d money-manager
+    docker compose build
+    docker compose up -d money-manager
     
     print_success "Application deployed successfully"
 }
@@ -93,7 +93,7 @@ setup_ssl() {
     # Check if domain is set
     if ! grep -q "DOMAIN=your-domain.com" .env; then
         # Get SSL certificate
-        docker-compose -f docker-compose.prod.yml --profile ssl-setup run --rm certbot
+        docker compose -f docker compose.prod.yml --profile ssl-setup run --rm certbot
         
         # Copy certificates to correct location
         sudo cp ssl/live/$(grep DOMAIN .env | cut -d'=' -f2)/fullchain.pem ssl/
@@ -113,7 +113,7 @@ check_health() {
     # Wait for application to start
     sleep 30
     
-    if docker-compose exec money-manager curl -f http://localhost:8000/health > /dev/null 2>&1; then
+    if docker compose exec money-manager curl -f http://localhost:8000/health > /dev/null 2>&1; then
         print_success "Application is healthy"
         return 0
     else
@@ -125,7 +125,7 @@ check_health() {
 # Show deployment status
 show_status() {
     print_status "Deployment Status:"
-    docker-compose ps
+    docker compose ps
     
     echo ""
     print_status "Application URLs (configure in your nginx):"
@@ -173,7 +173,7 @@ main() {
         echo "4. Test the application"
         
     else
-        print_error "Deployment failed. Check logs with: docker-compose -f docker-compose.prod.yml logs"
+        print_error "Deployment failed. Check logs with: docker compose -f docker compose.prod.yml logs"
         exit 1
     fi
 }
@@ -193,28 +193,28 @@ case "${1:-deploy}" in
         show_status
         ;;
     "logs")
-        docker-compose logs -f
+        docker compose logs -f
         ;;
     "stop")
         print_status "Stopping Money Manager..."
-        docker-compose down
+        docker compose down
         print_success "Stopped"
         ;;
     "restart")
         print_status "Restarting Money Manager..."
-        docker-compose restart
+        docker compose restart
         print_success "Restarted"
         ;;
     "backup")
         print_status "Starting backup service..."
-        docker-compose --profile backup up -d backup
+        docker compose --profile backup up -d backup
         print_success "Backup service started"
         ;;
     "update")
         print_status "Updating Money Manager..."
-        docker-compose down
-        docker-compose build --no-cache
-        docker-compose up -d
+        docker compose down
+        docker compose build --no-cache
+        docker compose up -d
         print_success "Updated"
         ;;
     "help")
