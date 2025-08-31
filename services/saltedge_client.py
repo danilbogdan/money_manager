@@ -41,7 +41,8 @@ class SaltEdgeClient:
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             'App-id': self.app_id,
-            'Secret': signature,
+            'Secret': self.secret_key,
+            'Signature': signature,
             'Expires-at': str(expires_at)
         }
         
