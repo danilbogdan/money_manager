@@ -6,10 +6,10 @@ This guide explains how to use Adminer for managing your SQLite database, includ
 
 According to the [Adminer documentation](https://www.adminer.org/en/password/), Adminer 4.6.3+ doesn't support accessing databases without passwords for security reasons. Since SQLite doesn't support user authentication, we need a workaround.
 
-## ✅ **Our Solution: Custom Plugin**
+## ✅ **Our Solution: Built-in Plugin**
 
-We've implemented the **login-password-less plugin** recommended by Adminer:
-- Uses a dummy password (`admin`) for Adminer's interface
+We use the **login-password-less plugin** that comes with Adminer:
+- Uses a password (`admin`) for Adminer's web interface 
 - Automatically connects to SQLite without passing credentials to the database
 - Maintains security by requiring authentication at the web interface level
 
@@ -78,10 +78,17 @@ COPY adminer-config/login-password-less.php /var/www/html/plugins-enabled/
 ```
 
 ### **Plugin Configuration**
-The `login-password-less.php` plugin:
-- Accepts the dummy password "admin"
-- Connects directly to SQLite file
-- Bypasses Adminer's password requirements
+The `login-password-less.php` plugin configuration:
+```php
+<?php
+require_once('plugins/login-password-less.php');
+return new AdminerLoginPasswordLess(
+    $password_hash = password_hash('admin', PASSWORD_DEFAULT)
+);
+```
+- Accepts the password "admin" (hashed securely)
+- Uses Adminer's built-in plugin system
+- Connects directly to SQLite without database credentials
 
 ### **Docker Compose Setup**
 ```yaml
@@ -139,7 +146,11 @@ ls -la data/money_manager.db
 
 ### **Plugin Issues**
 ```bash
-# Rebuild Adminer with plugins
+# Stop and rebuild Adminer with fresh plugin configuration
+./deploy.sh stop-adminer
+./deploy.sh adminer
+
+# Or manually rebuild
 docker compose --profile adminer build adminer --no-cache
 docker compose --profile adminer up -d adminer
 ```

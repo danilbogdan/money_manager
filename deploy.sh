@@ -216,11 +216,11 @@ case "${1:-deploy}" in
         ;;
     "adminer")
         print_status "Building and starting Adminer database management..."
-        docker compose --profile adminer build adminer
+        docker compose --profile adminer build adminer --no-cache
         docker compose --profile adminer up -d adminer
         print_success "Adminer started - access via http://localhost:8080"
         echo ""
-        print_status "Adminer login details:"
+        print_status "Adminer access information:"
         echo "  🌐 Local access: http://localhost:8080"
         echo "  🌐 Web access: https://danilbogdan.com/adminer/ (if nginx configured)"
         echo ""
@@ -229,7 +229,7 @@ case "${1:-deploy}" in
         echo "  Username: (leave empty)"
         echo "  Password: admin"
         echo ""
-        print_status "After login, the database will be accessible automatically."
+        print_status "The SQLite database will be accessible after web login."
         ;;
     "stop-adminer")
         print_status "Stopping Adminer..."
